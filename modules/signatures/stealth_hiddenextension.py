@@ -1,4 +1,4 @@
-# Copyright (C) 2015 Kevin Ross
+# Copyright (C) 2016 Kevin Ross
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,22 +15,15 @@
 
 from lib.cuckoo.common.abstracts import Signature
 
-class SunbeltDetectFiles(Signature):
-    name = "antisandbox_sunbelt_files"
-    description = "Detects Sunbelt Sandbox through the presence of a file"
+class StealthHiddenExtension(Signature):
+    name = "stealth_hidden_extension"
+    description = "Attempts to modify Explorer settings to prevent file extensions from being displayed"
     severity = 3
-    categories = ["anti-sandbox"]
+    categories = ["stealth"]
     authors = ["Kevin Ross"]
-    minimum = "0.5"
+    minimum = "1.2"
 
     def run(self):
-        indicators = [
-            ".*\\\\SandboxStarter\.exe$",
-            "^C\:\\\\analysis\\\\.*",
-        ]
-
-        for indicator in indicators:
-            if self.check_file(pattern=indicator, regex=True):
+        if self.check_write_key(pattern=".*\\\\Software\\\\(Wow6432Node\\\\)?Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Advanced\\\\HideFileExt$", regex=True, all=True):
                 return True
-
         return False

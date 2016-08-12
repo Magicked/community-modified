@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Claudio "nex" Guarnieri (@botherder), Optiv, Inc. (brad.spengler@optiv.com)
+# Copyright (C) 2016 Brad Spengler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,16 +15,23 @@
 
 from lib.cuckoo.common.abstracts import Signature
 
-class VBoxDetectACPI(Signature):
-    name = "antivm_vbox_acpi"
-    description = "Detects VirtualBox using ACPI tricks"
+class FortinetDetectFiles(Signature):
+    name = "antisandbox_fortinet_files"
+    description = "Attempts to detect Fortinet Sandbox through the presence of a file"
     severity = 3
-    categories = ["anti-vm"]
-    authors = ["nex", "Optiv"]
-    minimum = "1.2"
+    categories = ["anti-sandbox"]
+    authors = ["Brad Spengler"]
+    minimum = "0.5"
 
     def run(self):
-        if self.check_key(pattern=".*\\\\HARDWARE\\\\ACPI\\\\(DSDT|FADT|RSDT)\\\\VBOX__$", regex=True):
-            return True
+        indicators = [
+            "^C:\\\\tracer\\\\mdare32_0\.sys$",
+            "^C:\\\\tracer\\\\fortitracer\.exe$",
+            "^C:\\\\manual\\\\sunbox\.exe$",
+        ]
+
+        for indicator in indicators:
+            if self.check_file(pattern=indicator, regex=True):
+                return True
 
         return False

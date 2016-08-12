@@ -26,7 +26,7 @@ class AntiAVDetectFile(Signature):
             ".*\\\\Kaspersky\\ Lab\\ Setup\\ Files",
             ".*\\\\DrWeb",
             ".*\\\\Norton\\ AntiVirus",
-            ".*\\\\Norton\\ (Security with Backup|Internet Security)\\\\"
+            ".*\\\\Norton\\ (Security with Backup|Internet Security)\\\\",
             ".*\\\\ESET",
             ".*\\\\Agnitum",
             ".*\\\\Panda\\ Security",
@@ -51,7 +51,7 @@ class AntiAVDetectFile(Signature):
             ".*\\\\G\\ DATA",
             ".*\\\\P\\ Tools",
             ".*\\\\P\\ Tools\\ Internet\\ Security",
-            ".*\\\\K7\\ omputing",
+            ".*\\\\K7\\ Computing",
             ".*\\\\Vba32",
             ".*\\\\Sunbelt\\ Software",
             ".*\\\\FRISK\\ Software",

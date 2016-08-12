@@ -1,4 +1,4 @@
-# Copyright (C) 2013,2015 Claudio "nex" Guarnieri (@botherder), Optiv, Inc. (brad.spengler@optiv.com)
+# Copyright (C) 2016 Brad Spengler
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,20 +15,21 @@
 
 from lib.cuckoo.common.abstracts import Signature
 
-class GetProductID(Signature):
-    name = "antisandbox_productid"
-    description = "Retrieves Windows ProductID, probably to fingerprint the sandbox"
+class HyperVDetectKeys(Signature):
+    name = "antivm_hyperv_keys"
+    description = "Detects Hyper-V through the presence of a registry key"
     severity = 3
-    categories = ["anti-sandbox"]
-    authors = ["nex", "Optiv"]
-    minimum = "1.2"
+    categories = ["anti-vm"]
+    authors = ["Brad Spengler"]
+    minimum = "0.5"
 
     def run(self):
         indicators = [
-            ".*\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\ProductId$",
-            ".*\\\\Microsoft\\\\Internet\\ Explorer\\\\Registration\\\\ProductId$",
+            ".*\\\\SYSTEM\\\\(CurrentControlSet|ControlSet001)\\\\Enum\\\\ACPI\\\\Hyper_V_Gen_Counter_V1$",
         ]
+
         for indicator in indicators:
-            if self.check_read_key(pattern=indicator, regex=True):
+            if self.check_key(pattern=indicator, regex=True):
                 return True
+
         return False

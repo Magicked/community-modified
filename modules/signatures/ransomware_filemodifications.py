@@ -34,15 +34,18 @@ class RansomwareFileModifications(Signature):
         Signature.__init__(self, *args, **kwargs)
         self.movefilecount = 0
         self.appendcount = 0
+        self.appendemailcount = 0
         self.newextensions = []
      
     filter_apinames = set(["MoveFileWithProgressW","MoveFileWithProgressTransactedW"])
 
     def on_call(self, call, process):
+        if not call["status"]:
+            return None
         origfile = self.get_argument(call, "ExistingFileName")
         newfile = self.get_argument(call, "NewFileName")
         self.movefilecount += 1
-        if origfile != newfile:
+        if origfile != newfile and "@" not in newfile:
             origextextract = re.search("^.*(\.[a-zA-Z0-9_\-]{1,}$)", origfile)
             if not origextextract:
                 return None
@@ -56,6 +59,8 @@ class RansomwareFileModifications(Signature):
                     self.appendcount += 1
                     if self.newextensions.count(newextension) == 0:
                         self.newextensions.append(newextension)
+        if origfile != newfile and "@" in newfile:
+            self.appendemailcount += 1
 
     def on_complete(self):
         ret = False
@@ -63,7 +68,10 @@ class RansomwareFileModifications(Signature):
         if self.movefilecount > 60:
             self.data.append({"file_modifications" : "Performs %s file moves indicative of a potential file encryption process" % (self.movefilecount)})
             ret = True
-            
+
+        if self.appendemailcount > 60:
+            self.data.append({"appends_email" : "Appears to have appended an email address onto %s files. This is used by ransomware which requires the user to email the attacker for payment/recovery actions" % (self.appendemailcount)})
+
         if "dropped" in self.results:
             droppedunknowncount = 0
             for dropped in self.results["dropped"]:
@@ -71,7 +79,7 @@ class RansomwareFileModifications(Signature):
                 filename = dropped["name"]
                 if mimetype == "data" and ".tmp" not in filename:
                     droppedunknowncount += 1            
-            if droppedunknowncount > 50:
+            if droppedunknowncount > 50 and self.results["info"]["package"] != "pdf":
                 self.data.append({"drops_unknown_mimetypes" : "Drops %s unknown file mime types which may be indicative of encrypted files being written back to disk" % (droppedunknowncount)})
                 ret = True 
 
