@@ -20,6 +20,7 @@ class RansomwareFiles(Signature):
     description = "Creates a known ransomware decryption instruction / key file."
     weight = 3
     severity = 3
+    families = []
     categories = ["ransomware"]
     authors = ["KillerInstinct"]
     minimum = "1.2"
@@ -56,9 +57,17 @@ class RansomwareFiles(Signature):
             (".*\\\\HELP_YOUR_FILES\.(html|txt)$", ["CryptFile2"]),
             (".*\\\\READ_IT\.txt$", ["MMLocker"]),
             (".*\\\\#\ DECRYPT\ MY\ FILES\ #\.(txt|html|vbs)$", ["Cerber"]),
-            (".*\\\\!satana!.txt$", ["Satana"]),
+            (".*\\\\!satana!\.txt$", ["Satana"]),
             (".*\\\\HOW_TO_UNLOCK_FILES_README_\([0-9a-f]+\)\.(txt|html|bmp)$", ["WildFire"]),
             (".*\\\\HELP_DECRYPT_YOUR_FILES\.(html|txt)$", ["CryptFile2"]),
+            (".*\\\\!!!\ Readme\ For\ Decrypt\ !!!\.txt$", ["MarsJoke"]),
+            (".*_HOWDO_text\.(html|bmp)$", ["Locky"]),
+            (".*\\\\!!_RECOVERY_instructions_!!\.(html|txt)$", ["Nuke"]),
+            (".*\\\\DECRYPT_YOUR_FILES\.HTML$", ["Fantom"]),
+            (".*\\\\README_RECOVER_FILES_.*\.(html|txt|png)$", ["HadesLocker"]),
+            (".*\\\\README\.hta$", ["Cerber"]),
+            (".*\\\\RESTORE-FILES!.*txt$", ["Comrade-Circle"]),
+            (".*_WHAT_is\.(html|bmp)$", ["Locky"]),
         ]
 
         for ioc in file_list:
